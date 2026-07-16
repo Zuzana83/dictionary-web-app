@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon-32x32.png">
+  
+  <title>Frontend Mentor | Dictionary web app</title>
+  <link rel="stylesheet" href="./custom.css">
+  <link rel="stylesheet" href="./main.css">
+</head>
+<body>
+ <header>
+       <a href="index.html" aria-label="Redirect to homepage">
+        <img src="./assets/images/logo.svg" alt="dictionary-logo" class="img-logo" />
+       </a>
+       <div class="settings-wrapper">
+        <!-- CUSTOM SELECT ELEMENT -->
+        <div class="custom-select">
+            <button type="button" aria-haspopup="fontSelection" aria-expanded="false" 
+            aria-controls="dropdownMenu" id="dropdown-button-2" class="dropdown-toggle-btn">
+              <span>Sans Serif</span>
+              <span><img src="./assets/images/icon-arrow-down.svg" alt=""></span>
+            </button>
+            <!-- Dropdown Menu -->
+            <ul id="dropdownMenu" class="dropdown" role="fontSelection"    aria-labelledby="dropdown-button-2" data-filter="fontPreference" hidden>
+                <li data-value="Sans Serif" role="none" tabindex="0">Sans Serif</li>
+                <li data-value="Serif" role="none" tabindex="0">Serif</li>
+                <li data-value="Mono" role="none" tabindex="0">Mono</li>
+            </ul>
+        </div>
+        <div class="preferred-mode" aria-label="Toggle light and dark theme">
+            <!-- CUSTOM TOGGLE SWITCH -->
+            <input type="checkbox" id="dark-mode" role="switch" aria-checked="false" aria-label="Toggle dark mode"/><label for="dark-mode" class="label-1">toggle theme</label>
+            <span class="moon-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><path fill="none" stroke="#838383" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M1 10.449a10.544 10.544 0 0 0 19.993 4.686C11.544 15.135 6.858 10.448 6.858 1A10.545 10.545 0 0 0 1 10.449Z"/></svg>
+            </span>
+        </div>
+       </div>
+    </header>
+    <main>
+        <section class="dictionary-form-section">
+            <form id="dictionaryForm" class="dictionary-form">
+                <label for="searchTerm" class="sr-only">What are you looking for?</label>
+                <div class="form-input-wrapper">
+                <input type="text" name="search-term" class="form-input" id="searchTerm" placeholder="type the word">
+                <span class="search-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 18 18"><path fill="none" stroke="#A445ED" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m12.663 12.663 3.887 3.887M1 7.664a6.665 6.665 0 1 0 13.33 0 6.665 6.665 0 0 0-13.33 0Z"/></svg> 
+                </span>
+                </div>
+            </form>
+        </section>
+        <section class="dictionary-result">
+            <div class="search-term-result">
+                <div>
+                    <p class="term" id="term">keyboard</p>
+                    <p class="phonetic" id="phonetic">/ˈkiːbɔːd/</p>
+                </div>
+                <div>
+                    <button id="playBtn" class="play-btn" aria-label="Play phonetic pronunciation">
+                     <svg xmlns="http://www.w3.org/2000/svg" width="75" height="75" viewBox="0 0 75 75"><g fill="#A445ED" fill-rule="evenodd"><circle cx="37.5" cy="37.5" r="37.5" opacity=".25"/><path d="M29 27v21l21-10.5z"/></g></svg>
+                    </button>
+                    <audio  src="https://api.dictionaryapi.dev/media/pronunciations/en/keyboard-us.mp3" id="phonetic-audio"></audio>
+                </div>  
+            </div>
+        </section>
+        <section class="detail-definition">
+                <div class="definition-article">
+                    <div class="part-of-speech-wrapper">
+                        <p class="part-of-speech">noun</p>
+                        <div class="line"></div>
+                    </div>
+                    <h3 class="meaning-title">Meaning</h3>
+                    <ul class="meaning-definition-list">
+                        <li class="definition-list-item">A component of many instruments including the piano, organ, and harpsichord consisting of usually black and white keys that cause different tones to be produced when struck.</li>
+                        <li class="definition-list-item">A device with keys of a musical keyboard, used to control electronic sound-producing devices which may be built into or separate from the keyboard.</li>
+                        <li class="definition-list-item">(etc.) A set of keys used to operate a typewriter, computer etc.</li>
+                    </ul>
+                    <div class="synonyms-wrapper">
+                        <h3>Synonyms</h3>
+                        <p class="synonym-word" id="synonymWord">electronic keyboard</p>
+                    </div>
+                </div>
+                <div>
+                    <div class="part-of-speech-wrapper">
+                        <p class="part-of-speech">verb</p>
+                        <div class="line"></div>
+                    </div>
+                    <h3 class="meaning-title">Meaning</h3>
+                    <ul class="meaning-definition-list">
+                        <li class="definition-list-item">To type on a computer keyboard. <br>
+                        <span class="example" id="example">"Keyboarding is the part of this job I hate the most.</span></li>
+                    
+                    </ul>
+                </div>
+        </section>
+    </main>
+    <footer>
+        <div class="info">
+            <p>Source</p>
+            <a href="https://www.wikipedia.org" target="_blank" rel="noopener noreferrer">https://en.wiktionary.org/wiki/keyboard
+            <span><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"><path fill="none" stroke="#838383" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6.09 3.545H2.456A1.455 1.455 0 0 0 1 5v6.545A1.455 1.455 0 0 0 2.455 13H9a1.455 1.455 0 0 0 1.455-1.455V7.91m-5.091.727 7.272-7.272m0 0H9m3.636 0V5"/></svg></span>
+            </a>
+        </div>
+    </footer>
+    <div class="error-msg" id="errMsg"></div>
+  <script src="./app.js"></script>
+</body>
+</html>
