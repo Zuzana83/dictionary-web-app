@@ -65,44 +65,19 @@
         <section class="dictionary-result" id="dictionaryResult" hidden>
             <div class="search-term-result">
                 <div>
-                    <h2 class="term" id="term"></h2>
+                    <h2 class="term" id="termEl"></h2>
                     <p class="phonetic" id="phonetic"></p>
                 </div>
                 <div>
                     <button id="playBtn" class="play-btn" aria-label="Play phonetic pronunciation">
                      <svg xmlns="http://www.w3.org/2000/svg" width="75" height="75" viewBox="0 0 75 75"><g fill="#A445ED" fill-rule="evenodd"><circle cx="37.5" cy="37.5" r="37.5" opacity=".25"/><path d="M29 27v21l21-10.5z"/></g></svg>
                     </button>
-                    <audio src="" id="phonetic-audio"></audio>
+                    <audio src="" id="phoneticAudio"></audio>
                 </div>  
             </div>
         </section>
         <section class="detail-definition" id="detailDefinition" hidden>
-                <article class="definition-article">
-                    <div class="part-of-speech-wrapper">
-                        <p class="part-of-speech">noun</p>
-                        <div class="line"></div>
-                    </div>
-                    <h3 class="meaning-title">Meaning</h3>
-                    <ul class="meaning-definition-list">
-                        <li class="definition-list-item"></li>
-                    </ul>
-                    <div class="synonyms-wrapper">
-                        <h3>Synonyms</h3>
-                        <p class="synonym-word" id="synonymWord"></p>
-                    </div>
-                </article>
-                <article>
-                    <div class="part-of-speech-wrapper">
-                        <p class="part-of-speech">verb</p>
-                        <div class="line"></div>
-                    </div>
-                    <h3 class="meaning-title">Meaning</h3>
-                    <ul class="meaning-definition-list">
-                        <li class="definition-list-item"><br>
-                        <span class="example" id="example"></span></li>
-                    
-                    </ul>
-                </article>
+                
         </section>
         <!-- ERROR MESSAGE -->
         <section class="not-found" id="notFound" hidden>
@@ -113,11 +88,12 @@
             </article>
         </section>
     </main>
-    <footer hidden>
+    <footer id="pageFooter" hidden>
         <div class="info">
             <p>Source</p>
-            <a href="#" target="_blank" rel="noopener noreferrer" id="sourceLink">https://en.wiktionary.org/wiki/keyboard
+            <a href="#" target="_blank" rel="noopener noreferrer" id="sourceLink">
             <span><svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 14 14"><path fill="none" stroke="#838383" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M6.09 3.545H2.456A1.455 1.455 0 0 0 1 5v6.545A1.455 1.455 0 0 0 2.455 13H9a1.455 1.455 0 0 0 1.455-1.455V7.91m-5.091.727 7.272-7.272m0 0H9m3.636 0V5"/></svg></span>
+            <span id="linkText"></span>
             </a>
         </div>
     </footer>

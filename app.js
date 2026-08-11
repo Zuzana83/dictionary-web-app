@@ -5,6 +5,19 @@ const dropdownList = document.querySelector(".dropdown");
 const themeToggleSwitch = document.getElementById("dark-mode");
 const dictionaryFormEl = document.getElementById("dictionaryForm");
 const searchTermEl = document.getElementById("searchTerm");
+const errMsgEl = document.getElementById("errMsg");
+// Searched term and phonetic DOM elements
+const termEl = document.getElementById("termEl");
+const phoneticEl = document.getElementById("phonetic");
+const audioEl = document.getElementById("phoneticAudio");
+const playAudioBtnEl = document.getElementById("playBtn");
+const sourceLinkEl = document.getElementById("sourceLink");
+const sourceLinkText = document.getElementById("linkText");
+// Sections in HTML
+const dictionaryResultSection = document.getElementById("dictionaryResult");
+const detailDefinitionSection = document.getElementById("detailDefinition");
+const notFoundSection = document.getElementById("notFound");
+const pageFooter = document.getElementById("pageFooter");
 
 const fontDisplayMap = {
     sans: "Sans Serif",
@@ -100,3 +113,165 @@ const init = () => {
 }
 
 init();
+
+// FETCH FROM API FUNCTIONALITY
+async function fetchSearchedTerm(url) {
+    try {
+        const resp = await fetch(url);
+        if(!resp.ok) {
+            return null;
+        }
+        const data = await resp.json();
+        // console.log(data);
+        return data;
+    } catch (error) {
+        console.error(error);
+        return null;
+    }
+}
+
+const createDefinitionItem = (def) => {
+    const li = document.createElement("li");
+    li.className = "definition-list-item";
+    li.textContent = def.definition;
+
+    if(def.example) {
+        const paragraph = document.createElement("p");
+        paragraph.className = "example";
+        paragraph.textContent = `"${def.example}"`;
+        li.appendChild(paragraph)
+    }
+    return li;
+}
+
+const createMeaningArticle = (meaning) => {
+    const article = document.createElement("article");
+    article.className = "definition-article";
+
+    const divOut = document.createElement("div");
+    divOut.className = "part-of-speech-wrapper";
+
+    const p = document.createElement("p");
+    p.className = "part-of-speech";
+    p.textContent = `${meaning.partOfSpeech}`;
+
+    const divIn = document.createElement("div");
+    divIn.className = "line";
+
+    divOut.append(p);
+    divOut.append(divIn);
+
+    const heading = document.createElement("h3");
+    heading.className = "meaning-title";
+    heading.textContent = "Meaning";
+
+    const list = document.createElement("ul");
+    list.className = "meaning-definition-list";
+
+    for(const item of meaning.definitions.slice(0, 3)) {
+        const listItem = createDefinitionItem(item);
+        list.append(listItem);
+    }
+
+    article.append(divOut);
+    article.append(heading);
+    article.append(list);
+
+    if(meaning.synonyms?.length) {
+        const div = document.createElement("div");
+        div.className = "synonyms-wrapper";
+
+        const heading = document.createElement("h3");
+        heading.textContent = "Synonyms";
+
+        const p = document.createElement("p");
+        p.className = "synonym-word";
+        p.textContent = `${meaning.synonyms[0]}`
+
+        div.append(heading);
+        div.append(p);
+
+        article.append(div);
+    }
+    
+    return article;
+}
+
+const displayMeanings = (meanings) => {
+    if(!detailDefinitionSection) return;
+    for(const meaning of meanings) {
+        const article = createMeaningArticle(meaning);
+        detailDefinitionSection.append(article);
+    }
+}
+
+if(dictionaryFormEl) {
+    dictionaryFormEl.addEventListener("submit", async function(e) {
+        e.preventDefault();
+
+        // Reset ALL sections first
+        detailDefinitionSection.innerHTML = "";
+        detailDefinitionSection.hidden = true;
+        dictionaryResultSection.hidden = true;
+        notFoundSection.hidden = true;
+        pageFooter.hidden = true;
+
+        // Clear error state
+        searchTermEl.parentElement.classList.remove("error");
+        errMsgEl.hidden = true;
+
+        const word = searchTermEl.value.trim();
+        // 1. empty check
+        if(!word) {
+            searchTermEl.parentElement.classList.add("error");
+            errMsgEl.hidden = false;
+            return
+        };
+         // 2. fetch data
+        const data = await fetchSearchedTerm(`${baseURL}${word}`);
+        console.log(data);
+        // 3. if null → show not-found
+        if(!data) {
+            notFoundSection.hidden = false;
+            dictionaryResultSection.hidden = true;
+            detailDefinitionSection.hidden = true;
+            pageFooter.hidden = true;
+            return;
+        }
+         // 4. if data → display everything
+        notFoundSection.hidden = true;
+        const entry = data[0];
+        
+        dictionaryResultSection.hidden = false;
+        termEl.textContent = entry.word;
+        const phoneticAudio = entry.phonetics.find(p => p.audio);
+        phoneticEl.textContent = entry.phonetic || phoneticAudio?.text || "";
+
+        if(phoneticAudio?.audio) {
+            audioEl.src = phoneticAudio?.audio;
+            playAudioBtnEl.hidden = false;
+        } else {
+            playAudioBtnEl.hidden = true;
+        }
+
+        detailDefinitionSection.hidden = false;
+        displayMeanings(entry.meanings);
+
+        pageFooter.hidden = false;
+        sourceLinkEl.href = entry.sourceUrls[0];
+        sourceLinkText.textContent = entry.sourceUrls[0];
+    });
+}
+
+if(playAudioBtnEl) {
+        playAudioBtnEl.addEventListener("click", () => {
+            if(audioEl.src) audioEl.play();
+        });
+}
+
+if(searchTermEl) {
+    searchTermEl.addEventListener("input", function() {
+        searchTermEl.parentElement.classList.remove("error");
+        errMsgEl.hidden = true;
+    });
+}
