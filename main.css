@@ -19,11 +19,15 @@
     --ff-primary: var(--sans);
     --body-bg: var(--neutral-0);
     --text-clr: var(--neutral-800);
+    --form-input-bg: var(--neutral-100);
+    --placeholder-text: var(--neutral-800);
 }
 
 html.dark-theme {
-    --body-bg: var(--neutral-900);
+    --body-bg: var(--neutral-950);
     --text-clr: var(--neutral-0);
+    --form-input-bg: var(--neutral-900);
+    --placeholder-text: var(--neutral-0);
 }
 
 html.font-sans {
@@ -104,7 +108,7 @@ header {
 }
 
 .form-input-wrapper {
-    background-color: var(--neutral-100);
+    background-color: var(--form-input-bg);
     width: 100%;
     display: flex;
     justify-content: space-between;
@@ -125,7 +129,6 @@ header {
     font-family: var(--ff-primary);
     font-weight: 700;
     color: var(--text-clr);
-    color: var(--neutral-700);
 }
 
 .form-input:active,
@@ -142,7 +145,7 @@ header {
 }
 
 ::placeholder {
-    color: var(--text-clr);
+    color: var(--placeholder-text);
     opacity: .25;
     font-weight: bold;
 }
@@ -186,6 +189,10 @@ header {
     justify-content: center;
     align-items: center;
     background-color: transparent;
+}
+
+.play-btn svg g circle  {
+    fill: var(--play-btn-bg);
 }
 
 .play-btn:hover svg g circle {
@@ -280,7 +287,8 @@ h3 {
 
 /* ERROR MESSAGE SECTION */
 .not-found {
-    padding-top: 1.5rem;
+    /* padding-top: 1.5rem; */
+    margin-top: 5rem;
 }
 
 .not-found-content {
@@ -387,6 +395,10 @@ input:checked ~ .moon-icon svg path {
     stroke: var(--purple-500);
 }
 
+input:hover + .toggle-label {
+	background-color: var(--purple-500);
+}
+
 /* CUSTOM SELECT */
 .custom-select {
     position: relative;
@@ -407,12 +419,12 @@ input:checked ~ .moon-icon svg path {
     border: 1px solid transparent;
 }
 
-.dropdown-toggle-btn[aria-expanded="true"] {
-    /* box-shadow: 0 0 5px rgba(0, 0, 0, .1); */
-}
+/* .dropdown-toggle-btn[aria-expanded="true"] {
+    box-shadow: 0 0 5px rgba(0, 0, 0, .1);
+} */
 
 .dropdown-toggle-btn:hover {
-    color: var(--neutral-950);
+    color: var(--text-clr);
 }
 
 .dropdown-toggle-btn:focus {
@@ -438,7 +450,7 @@ input:checked ~ .moon-icon svg path {
 }
 
 html.dark-theme .dropdown {
-    box-shadow: 0 0 0.75rem 0.5rem #A445ED50;
+    box-shadow: 0 0 0.75rem 0.5rem #A445ED80;
 }
 
 .dropdown li:not(:last-child) {
@@ -469,4 +481,66 @@ li[data-value="mono"] {
     font-size: 1.125rem;
     font-weight: 700;
     line-height: 133%;
+}
+
+@media screen and (min-width: 44rem) {
+    header {
+        padding-top: 3.6rem;
+    }
+
+    .img-logo {
+        width: 2rem;
+    }
+
+    .dictionary-form-section {
+        padding-block: 3rem 3rem;
+    }
+
+    .form-input {
+        font-size: 1.25rem;
+    }
+
+    .term {
+        font-size: 4rem;
+    }
+
+    .phonetic {
+        font-size: 1.5rem;
+        line-height: 120%;
+    }
+
+    .play-btn {
+        width: 4.6875rem;
+        height: 4.6875rem;
+    }
+
+    .part-of-speech {
+        font-size: 1.5rem;
+        line-height: 120%;
+    }
+
+    h3 {
+        font-size: 1.25rem;
+    }
+
+    .definition-list-item {
+        font-size: 1.125rem;
+        line-height: 133%;
+        padding-left: .65rem;
+    }
+
+    .synonym-word {
+        font-size: 1.25rem;
+    }
+
+    .info {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 1.25rem;
+    }
+
+    .info p {
+        margin-bottom: 0;
+    }
 }

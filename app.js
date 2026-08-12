@@ -248,6 +248,9 @@ if(dictionaryFormEl) {
         phoneticEl.textContent = entry.phonetic || phoneticAudio?.text || "";
 
         if(phoneticAudio?.audio) {
+            // Note: some audio files may fail due to 
+            // CORS headers missing on API server
+            audioEl.crossOrigin = "anonymous";
             audioEl.src = phoneticAudio?.audio;
             playAudioBtnEl.hidden = false;
         } else {
@@ -264,9 +267,12 @@ if(dictionaryFormEl) {
 }
 
 if(playAudioBtnEl) {
-        playAudioBtnEl.addEventListener("click", () => {
-            if(audioEl.src) audioEl.play();
-        });
+    playAudioBtnEl.addEventListener("click", () => {
+        if(!audioEl.src) return;
+        // New audio element to avoid CORS issue
+        const audio = new Audio(audioEl.src);
+        audio.play().catch(err => console.error("Audio playback failed: ", err));
+    });
 }
 
 if(searchTermEl) {
