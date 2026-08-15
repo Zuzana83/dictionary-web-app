@@ -19,6 +19,8 @@ const detailDefinitionSection = document.getElementById("detailDefinition");
 const notFoundSection = document.getElementById("notFound");
 const pageFooter = document.getElementById("pageFooter");
 
+let currentRequest = null;
+
 const fontDisplayMap = {
     sans: "Sans Serif",
     serif: "Serif",
@@ -147,17 +149,25 @@ const init = () => {
 init();
 
 // FETCH FROM API FUNCTIONALITY
-async function fetchSearchedTerm(url) {
+async function fetchSearchedTerm(url, signal) {
     try {
-        const resp = await fetch(url);
+        const resp = await fetch(url, {signal});
+
+        if(resp.status === 404) {
+            return {error: "notFound"}
+        }
+
         if(!resp.ok) {
-            return null;
+            return {error: "serverError"};
         }
         const data = await resp.json();
         return data;
     } catch (error) {
+        if(error.name === "AbortError") {
+            return  {error: "aborted"}
+        }
         console.error(error);
-        return null;
+        return {error: "networkError"};
     }
 }
 
@@ -240,6 +250,12 @@ if(dictionaryFormEl) {
     dictionaryFormEl.addEventListener("submit", async function(e) {
         e.preventDefault();
 
+        if(currentRequest) {
+            currentRequest.abort();
+        }
+
+        currentRequest = new AbortController();
+
         // Reset ALL sections first
         detailDefinitionSection.innerHTML = "";
         detailDefinitionSection.hidden = true;
@@ -259,15 +275,28 @@ if(dictionaryFormEl) {
             return
         };
          // 2. fetch data
-        const data = await fetchSearchedTerm(`${baseURL}${word}`);
-        // 3. if null → show not-found
-        if(!data) {
+        const data = await fetchSearchedTerm(`${baseURL}${word}`, currentRequest.signal);
+
+        // 3. Handle different errors
+        if(data.error === "aborted") return;
+
+        if(data.error === "notFound") {
             notFoundSection.hidden = false;
             dictionaryResultSection.hidden = true;
             detailDefinitionSection.hidden = true;
             pageFooter.hidden = true;
             return;
         }
+
+        if(data.error === "networkError" || data.error === "serverError") {
+            notFoundSection.hidden = false;
+            dictionaryResultSection.hidden = true;
+            detailDefinitionSection.hidden = true;
+            pageFooter.hidden = true;
+            notFoundSection.querySelector(".not-found-title").textContent = "Connection problem. Please try later."
+            return;
+        }
+       
          // 4. if data → display everything
         notFoundSection.hidden = true;
         const entry = data[0];
