@@ -43,7 +43,7 @@ if(fontPreferenceButton) {
         if(!isExpanded) {
         fontPreferenceButton.setAttribute('aria-expanded', String(true));
         fontPreferenceButton.nextElementSibling.hidden = false; 
-        }
+      }
  });
 }
 
@@ -52,9 +52,15 @@ if(dropdownList) {
     const listElement = e.target.closest("li");
     
     if(listElement) {
-            let fontValue = listElement.dataset.value
+            let fontValue = listElement.dataset.value;
             
             if(!fontValue) return;
+
+            dropdownList.querySelectorAll("[role='option']").forEach(opt => {
+                opt.setAttribute("aria-selected", "false");
+            });
+
+            listElement.setAttribute("aria-selected", "true");
 
             updateFontButton(fontValue);
             
@@ -69,6 +75,28 @@ if(dropdownList) {
         }
     });
 }
+
+// Arrow key navigation on dropdown
+dropdownList.addEventListener("keydown", function(e) {
+    const options = [...dropdownList.querySelectorAll("[role='option']")];
+    const current = document.activeElement;
+    const index = options.indexOf(current);
+
+    if(e.key === "ArrowDown") {
+        e.preventDefault();
+        options[Math.min(index + 1, options.length - 1)].focus();
+    }
+    if(e.key === "ArrowUp") {
+        e.preventDefault();
+        options[Math.max(index - 1, 0)].focus();
+    }
+    if(e.key === "Enter") {
+        current.click();
+    }
+    if(e.key === "Escape") {
+        closeDropdown();
+    }
+});
 
 const updateTheme = (theme) => {
     // Toggle the class on the HTML element
@@ -91,7 +119,6 @@ if(themeToggleSwitch) {
         const isChecked = e.target.checked;
         let newTheme = isChecked ? "dark" : "light";
         updateTheme(newTheme);
-        themeToggleSwitch.setAttribute("aria-checked", String(isChecked));
         const preferences = JSON.parse(localStorage.getItem("preferences"));
         preferences.theme = newTheme;
         localStorage.setItem("preferences", JSON.stringify(preferences));
@@ -106,8 +133,13 @@ const init = () => {
     if(themeToggleSwitch) {
         const isDark = preferences.theme === "dark";
         themeToggleSwitch.checked = isDark;
-        themeToggleSwitch.setAttribute("aria-checked", String(isDark));
     }
+
+    const savedOptions = dropdownList.querySelector(`[data-value = "${preferences.font}"]`);
+    if(savedOptions) {
+        savedOptions.setAttribute("aria-selected", "true");
+    }
+
     updateFontButton(preferences.font)
     updateTheme(preferences.theme);
 }
@@ -122,7 +154,6 @@ async function fetchSearchedTerm(url) {
             return null;
         }
         const data = await resp.json();
-        // console.log(data);
         return data;
     } catch (error) {
         console.error(error);
@@ -229,7 +260,6 @@ if(dictionaryFormEl) {
         };
          // 2. fetch data
         const data = await fetchSearchedTerm(`${baseURL}${word}`);
-        console.log(data);
         // 3. if null → show not-found
         if(!data) {
             notFoundSection.hidden = false;
@@ -243,7 +273,10 @@ if(dictionaryFormEl) {
         const entry = data[0];
         
         dictionaryResultSection.hidden = false;
+
         termEl.textContent = entry.word;
+        termEl.focus(); // focus the searched word and aria-live will announce that for screen readers
+
         const phoneticAudio = entry.phonetics.find(p => p.audio);
         phoneticEl.textContent = entry.phonetic || phoneticAudio?.text || "";
 

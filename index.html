@@ -6,11 +6,27 @@
 
   <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon-32x32.png">
   <title>Frontend Mentor | Dictionary web app</title>
-  <script>
-    // GET LS IF IT IS THERE OR SET DEFAULT
-    const saved = localStorage.getItem("preferences");
-    const preferences = saved ? JSON.parse(saved) : {theme: "light", font: "sans"}
-    // APPLY BEFORE RENDERING PAGE
+  <script>  
+    // Default values for theme and font, and making sure only valid values for font and theme will be acceptable
+    const defaultPreferences = {theme: "light", font: "sans"};
+    const validThemes = ["light", "dark"];
+    const validFonts = ["sans", "serif", "mono"];
+
+    let preferences;
+    try {
+        const saved = localStorage.getItem("preferences");
+        const parsedValue = saved ? JSON.parse(saved) : defaultPreferences;
+        
+        preferences = {
+            theme: validThemes.includes(parsedValue.theme) ? parsedValue.theme : "light",
+            font: validFonts.includes(parsedValue.font) ? parsedValue.font : "sans"
+        };
+    } catch (error) {
+        // If data is corrupted, defaults will be used
+        preferences = defaultPreferences;
+        localStorage.removeItem("preferences");
+    }
+    // Preferences apply
     if(preferences.theme === "dark") {
         document.documentElement.classList.add("dark-theme");
     }
@@ -35,14 +51,14 @@
         </button>
         <!-- DROPDOWN MENU -->
         <ul id="dropdownMenu" class="dropdown" role="listbox"    aria-labelledby="dropdown-button-2" data-filter="fontPreference" hidden>
-            <li data-value="sans" role="none" tabindex="0">Sans Serif</li>
-            <li data-value="serif" role="none" tabindex="0">Serif</li>
-            <li data-value="mono" role="none" tabindex="0">Mono</li>
+            <li data-value="sans" role="option" aria-selected="true" tabindex="0">Sans Serif</li>
+            <li data-value="serif" role="option" aria-selected="false" tabindex="0">Serif</li>
+            <li data-value="mono" role="option" aria-selected="false" tabindex="0">Mono</li>
         </ul>
     </div>
     <div class="preferred-mode" aria-label="Toggle light and dark theme">
         <!-- CUSTOM TOGGLE SWITCH -->
-        <input type="checkbox" id="dark-mode" role="switch" aria-checked="false" aria-label="Toggle dark mode"/><label for="dark-mode" class="toggle-label">toggle theme</label>
+        <input type="checkbox" id="dark-mode" aria-label="Toggle dark mode"/><label for="dark-mode" class="toggle-label">toggle theme</label>
         <span class="moon-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 22 22"><path fill="none" stroke="#838383" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M1 10.449a10.544 10.544 0 0 0 19.993 4.686C11.544 15.135 6.858 10.448 6.858 1A10.545 10.545 0 0 0 1 10.449Z"/></svg>
         </span>
@@ -62,10 +78,10 @@
                 <small class="err-msg" id="errMsg" hidden>Whoops, can't be empty</small>
             </form>
         </section>
-        <section class="dictionary-result" id="dictionaryResult" hidden>
+        <section class="dictionary-result" id="dictionaryResult" aria-live="polite" hidden>
             <div class="search-term-result">
                 <div>
-                    <h2 class="term" id="termEl"></h2>
+                    <h2 class="term" tabindex="-1" id="termEl"></h2>
                     <p class="phonetic" id="phonetic"></p>
                 </div>
                 <div>
@@ -80,7 +96,7 @@
                 
         </section>
         <!-- ERROR MESSAGE -->
-        <section class="not-found" id="notFound" hidden>
+        <section class="not-found" id="notFound" aria-live="polite" hidden>
             <article class="not-found-content">
                 <p class="not-found-emoji">😕</p>
                 <h2 class="not-found-title">No Definitions Found</h2>
