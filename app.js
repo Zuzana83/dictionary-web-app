@@ -82,15 +82,28 @@ if(dropdownList) {
 dropdownList.addEventListener("keydown", function(e) {
     const options = [...dropdownList.querySelectorAll("[role='option']")];
     const current = document.activeElement;
-    const index = options.indexOf(current);
+    const index = options.indexOf(current);    
 
     if(e.key === "ArrowDown") {
         e.preventDefault();
-        options[Math.min(index + 1, options.length - 1)].focus();
+        const currentOption = options.find(option => {
+            return option.getAttribute("tabindex") === "0"
+        });
+        currentOption.setAttribute("tabindex", "-1");
+
+        const newOption = options[Math.min(index + 1, options.length - 1)];
+        newOption.setAttribute("tabindex", "0");
+        newOption.focus();
     }
     if(e.key === "ArrowUp") {
         e.preventDefault();
-        options[Math.max(index - 1, 0)].focus();
+        const currentOption = options.find(option => {
+            return option.getAttribute("tabindex") === "0"
+        });
+        currentOption.setAttribute("tabindex", "-1");
+        const newOption = options[Math.max(index - 1, 0)];
+        newOption.setAttribute("tabindex", "0");
+        newOption.focus();
     }
     if(e.key === "Enter") {
         current.click();
@@ -127,14 +140,12 @@ if(themeToggleSwitch) {
     });
 }
 
-
 const init = () => {
     const preferences = JSON.parse(localStorage.getItem("preferences"));
     if(!preferences) return;
 
     if(themeToggleSwitch) {
-        const isDark = preferences.theme === "dark";
-        themeToggleSwitch.checked = isDark;
+        themeToggleSwitch.checked = preferences.theme === "dark";
     }
 
     const savedOptions = dropdownList.querySelector(`[data-value = "${preferences.font}"]`);

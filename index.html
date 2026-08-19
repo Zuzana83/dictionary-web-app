@@ -15,12 +15,23 @@
     let preferences;
     try {
         const saved = localStorage.getItem("preferences");
-        const parsedValue = saved ? JSON.parse(saved) : defaultPreferences;
-        
-        preferences = {
+
+        if(saved) {
+            const parsedValue = JSON.parse(saved);
+            preferences = {
             theme: validThemes.includes(parsedValue.theme) ? parsedValue.theme : "light",
             font: validFonts.includes(parsedValue.font) ? parsedValue.font : "sans"
-        };
+         }
+        } else {
+            // Check system preference
+            const darkSystem = window.matchMedia("(prefers-color-scheme: dark)").matches;
+            preferences = {
+                theme: darkSystem ? "dark" : "light",
+                font: "sans"
+            }
+        }
+        
+        
     } catch (error) {
         // If data is corrupted, defaults will be used
         preferences = defaultPreferences;
@@ -52,8 +63,8 @@
         <!-- DROPDOWN MENU -->
         <ul id="dropdownMenu" class="dropdown" role="listbox"    aria-labelledby="dropdown-button-2" data-filter="fontPreference" hidden>
             <li data-value="sans" role="option" aria-selected="true" tabindex="0">Sans Serif</li>
-            <li data-value="serif" role="option" aria-selected="false" tabindex="0">Serif</li>
-            <li data-value="mono" role="option" aria-selected="false" tabindex="0">Mono</li>
+            <li data-value="serif" role="option" aria-selected="false" tabindex="-1">Serif</li>
+            <li data-value="mono" role="option" aria-selected="false" tabindex="-1">Mono</li>
         </ul>
     </div>
     <div class="preferred-mode" aria-label="Toggle light and dark theme">
