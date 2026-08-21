@@ -18,6 +18,8 @@ const dictionaryResultSection = document.getElementById("dictionaryResult");
 const detailDefinitionSection = document.getElementById("detailDefinition");
 const notFoundSection = document.getElementById("notFound");
 const pageFooter = document.getElementById("pageFooter");
+// sr-only element
+const searchStatusEl = document.getElementById("searchStatus");
 
 let currentRequest = null;
 
@@ -296,6 +298,7 @@ if(dictionaryFormEl) {
             dictionaryResultSection.hidden = true;
             detailDefinitionSection.hidden = true;
             pageFooter.hidden = true;
+            searchStatusEl.textContent = "No definitions found";
             return;
         }
 
@@ -313,6 +316,7 @@ if(dictionaryFormEl) {
         const entry = data[0];
         
         dictionaryResultSection.hidden = false;
+        searchStatusEl.textContent = `Results found for ${entry.word}`;
 
         termEl.textContent = entry.word;
         termEl.focus(); // focus the searched word and aria-live will announce that for screen readers
